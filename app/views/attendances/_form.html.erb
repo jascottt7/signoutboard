@@ -1,0 +1,59 @@
+<script>
+$(function(){
+$('#attendance_return_time_string').datetimepicker({
+    hourMin: 8,
+	hourMax: 18,
+	timeFormat: 'HH:mm tt',
+    dateFormat: "D M d",
+	stepMinute: 15,
+    controlType: 'select',
+    minute: <%= @attendance.time_to_next_quarter_hour(Time.now).min %>,
+    hour: <%= Time.now.hour + 1 %>,
+    minDate: 0
+});
+});
+</script>
+<%= form_for(@attendance) do |f| %>
+  <% if @attendance.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@attendance.errors.count, "error") %> prohibited this attendance from being saved:</h2>
+
+      <ul>
+      <% @attendance.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.hidden_field :out_of_office %>
+  </div>
+  <div class="field">
+    <%= f.label :return_time %><br />
+    <%= f.datetime_picker :return_time_string %>
+
+
+  </div>
+  <div class="field">
+    <%= f.label :reason %><br />
+    <%= f.select :reason, [['Out'],['Sick'],['Vacation'],['Offsite'],['Working from Home']]%>
+  </div>
+      
+  <div class="field">
+    <%= f.label :comment %><br />
+    <%= f.text_field :comment %>
+  </div>
+  <div class="field">
+    <%= f.hidden_field :employee_id %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>
+
+
+
+
+
+

@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  out_of_office: false
+  return_time: 2012-11-19 11:44:09
+  reason: MyString
+  comment: MyString
+  employee_id: 1
+
+two:
+  out_of_office: false
+  return_time: 2012-11-19 11:44:09
+  reason: MyString
+  comment: MyString
+  employee_id: 1

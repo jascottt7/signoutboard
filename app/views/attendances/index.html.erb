@@ -1,0 +1,110 @@
+<style type="text/css">
+
+
+#hor-minimalist-a
+{
+	font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+	font-size: 12px;
+	background: #fff;
+	margin: 45px;
+	width: 660px;
+	border-collapse: collapse;
+	text-align: left;
+}
+#hor-minimalist-a_filter {
+float:left;
+}
+#hor-minimalist-a th
+{
+	font-size: 14px;
+	font-weight: normal;
+	color: #039;
+	padding: 10px 8px;
+	border-bottom: 2px solid #6678b1;
+}
+#hor-minimalist-a td
+{
+	color: #669;
+	padding: 4px 4px 0px 4px;
+    width: 200;
+}
+#hor-minimalist-a tbody tr:hover td
+{
+	color: #009;
+}
+
+span.dropt:hover {text-decoration: none; z-index: 6; }
+span.dropt span {position: absolute; left: -9999px;
+  margin: 20px 0 0 200px; padding: 3px 3px 3px 3px;
+  border-style:solid; border-color:black; border-width:1px; z-index: 6;}
+span.dropt:hover span {left: 2%; background: #ffffff;} 
+
+</style>
+
+
+
+<h1>IN-OUT Board</h1>
+
+      <form class="filter_locations", method="get">Office:
+          <% @options = Attendance.all.map { |a| [ a.employee.branch_location] } %>
+          <%= select_tag "branch", options_for_select(@options.uniq.unshift("ALL")), :onchange => "this.form.submit();", :include_blank => true %> 
+        </form>        
+      <form class="filter_locations", method="get">Department:
+          <% @options = Attendance.all.map { |a| [ a.employee.department] } %>
+          <%= select_tag "department", options_for_select(@options.uniq.unshift("ALL")), :onchange => "this.form.submit();", :include_blank => true %> 
+      </form>
+      <form class="filter_locations", method="get">Supervisor:
+          <% @options = Attendance.all.map { |a| [ a.employee.supervisor] } %>
+          <%= select_tag "supervisor", options_for_select(@options.uniq.unshift("ALL")), :onchange => "this.form.submit();", :include_blank => true %> 
+      </form>        
+        
+<table id="hor-minimalist-a"  border="1" style="width: 500px;">
+<thead>
+  <tr>
+    <th></th>
+    <th>Employee</th>
+    <th>Hidden Employee Name</th>
+    <th>Return time</th>
+    <th>Comment</th>
+    <th></th>
+
+  </tr>
+</thead>
+<tbody>
+<% @attendances.each do |attendance| %>
+  <tr>
+  <td><%= image_tag("red_light.png") if attendance.out_of_office? %>
+  <%= image_tag("green_light.png") unless attendance.out_of_office? %></td>
+    <td>
+        <span class="dropt" title=""><font style="font-size:15px;"><b><%= attendance.employee.fname %> <%= attendance.employee.lname %></b></font> ext.<%= attendance.employee.ext %>
+            <span style="width:300px;">
+                <i><b><%= attendance.employee.position %></i></b>
+                <br /><b>Department:</b> <%= attendance.employee.department %>
+                <br /><b>Branch:</b> <%= attendance.employee.branch_location %>
+                <br /><b>Supervisor:</b> <%= attendance.employee.supervisor %>
+                <br /><b>Cell:</b> <%= attendance.employee.cell_phone %>
+                <br /><br /><b>Return Time:</b> <%= attendance.return_time.strftime("%a %b %e %l:%M %P")  unless attendance.return_time.nil? %>
+            </span>
+        </span>
+        <br />&emsp;<i><b><font color="red"><%= attendance.reason if attendance.out_of_office? %></font></b></i>
+    </td>
+    <td><%= attendance.employee.fname %> <%= attendance.employee.lname %></td>
+    <td>
+    <% if attendance.out_of_office? %>
+      <% unless attendance.return_time.nil? %>      
+        <%= attendance.return_time.strftime("%l:%M %P")  if attendance.return_time.today? %>
+        <%= attendance.return_time.strftime("%a %b %e %l:%M %P")  unless attendance.return_time.today? %>
+      <% end %>
+   <% end %>  
+       </td>
+    <td><%= attendance.comment %></td>   
+
+    <td><%= link_to "sign out", :action => "signout", :id => attendance.id unless attendance.out_of_office? %>
+    <%= link_to "sign in", :action => "signin", :id => attendance.id if attendance.out_of_office? %></td>
+
+<% end %>
+</tbody>
+</table>
+
+<br />
+
